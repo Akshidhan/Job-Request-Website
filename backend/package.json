@@ -7,10 +7,10 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --watch src --ext ts --exec \"ts-node ./src/index.ts\"",
+    "dev": "node init && nodemon --watch src --ext ts --exec \"ts-node ./src/index.ts\"",
     "test": "npm test",
-    "build": "tsc -p tsconfig.json",
-    "start": "node dist/index.js"
+    "build": "node init && tsc -p tsconfig.json",
+    "start": "node init && node dist/index.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
