@@ -1,18 +1,33 @@
 import type { Request, Response, NextFunction } from "express";
 const jwt = require("jsonwebtoken");
 
+const readCookieToken = (cookieHeader?: string) => {
+    if (!cookieHeader) {
+        return null;
+    }
+
+    const cookies = cookieHeader.split(";").map((cookie: string) => cookie.trim());
+    const tokenCookie = cookies.find((cookie: string) => cookie.startsWith("token="));
+
+    if (!tokenCookie) {
+        return null;
+    }
+
+    return tokenCookie.slice("token=".length);
+};
+
 const authenticateUser = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.startsWith("Bearer ")
+        ? authHeader.substring(7)
+        : readCookieToken(req.headers.cookie);
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!token) {
         return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const token = authHeader.substring(7);
-
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log("Decoded token:", decoded);
         (req as any).user = decoded;
         next();
     } catch (error) {

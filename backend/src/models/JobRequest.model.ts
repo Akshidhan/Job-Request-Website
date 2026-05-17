@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const User = require("./User.model");
 
 const jobRequestSchema = new mongoose.Schema(
   {
@@ -11,8 +12,7 @@ const jobRequestSchema = new mongoose.Schema(
       required: true,
     },
     category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
+      type: String,
     },
     location: {
       type: String,
@@ -25,9 +25,18 @@ const jobRequestSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Open", "In Progress", "Closed"],
+      enum: ["Open", "Ongoing", "Closed"],
       default: "Open",
     },
+    acceptedUser: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    }
   },
   {
     timestamps: true,
